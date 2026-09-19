@@ -1,6 +1,7 @@
 // localStorage 儲存資料所使用的鍵值
 const STORAGE_KEY = "todo-list-items";
 const THEME_STORAGE_KEY = "todo-list-theme";
+const FILTER_STORAGE_KEY = "todo-list-filter";
 
 // 取得畫面上需要操作的元素
 const form = document.getElementById("todo-form");
@@ -14,8 +15,8 @@ const filterRow = document.getElementById("filter-row");
 // 待辦事項陣列,每個項目為 { id, text, completed }
 let todos = loadTodos();
 
-// 目前的篩選條件:all(全部) / active(未完成) / completed(已完成)
-let currentFilter = "all";
+// 目前的篩選條件:all(全部) / active(未完成) / completed(已完成),初始值從 localStorage 讀取
+let currentFilter = loadFilter();
 
 // 從 localStorage 讀取待辦資料,若無資料或格式錯誤則回傳空陣列
 function loadTodos() {
@@ -31,6 +32,15 @@ function loadTodos() {
 // 將目前的待辦資料寫入 localStorage
 function saveTodos() {
   localStorage.setItem(STORAGE_KEY, JSON.stringify(todos));
+}
+
+// 從 localStorage 讀取篩選條件,若不是預期的三種值之一則安全回退為「全部」
+function loadFilter() {
+  const savedFilter = localStorage.getItem(FILTER_STORAGE_KEY);
+  if (savedFilter === "all" || savedFilter === "active" || savedFilter === "completed") {
+    return savedFilter;
+  }
+  return "all";
 }
 
 // 產生唯一的待辦事項 ID
@@ -144,15 +154,23 @@ function toggleTheme() {
   applyTheme(isDark ? "light" : "dark");
 }
 
-// 切換目前的篩選條件並更新按鈕樣式
+// 切換目前的篩選條件、存進 localStorage 並更新按鈕樣式
 function setFilter(filter) {
   currentFilter = filter;
+  localStorage.setItem(FILTER_STORAGE_KEY, filter);
 
   filterRow.querySelectorAll(".filter-btn").forEach((btn) => {
     btn.classList.toggle("active", btn.dataset.filter === filter);
   });
 
   render();
+}
+
+// 依目前的 currentFilter 同步篩選按鈕的選中樣式(用於頁面初始化)
+function syncFilterButtons() {
+  filterRow.querySelectorAll(".filter-btn").forEach((btn) => {
+    btn.classList.toggle("active", btn.dataset.filter === currentFilter);
+  });
 }
 
 // 新增一筆待辦事項
@@ -200,6 +218,7 @@ filterRow.querySelectorAll(".filter-btn").forEach((btn) => {
   btn.addEventListener("click", () => setFilter(btn.dataset.filter));
 });
 
-// 頁面載入時先套用主題設定,再渲染既有資料
+// 頁面載入時先套用主題設定、同步篩選按鈕樣式,再渲染既有資料
 initTheme();
+syncFilterButtons();
 render();
