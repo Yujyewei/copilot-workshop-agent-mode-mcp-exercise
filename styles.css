@@ -14,6 +14,36 @@
   --shadow-card: 0 8px 24px rgba(20, 24, 40, 0.08);
 }
 
+/* 深色模式配色,透過覆寫 :root 變數達成,不需另外寫死色碼 */
+[data-theme="dark"] {
+  --color-bg: #14161c;
+  --color-card-bg: #1e2129;
+  --color-primary: #7c93ff;
+  --color-primary-hover: #93a5ff;
+  --color-danger: #f0736c;
+  --color-danger-hover: #ff8a83;
+  --color-text: #e7e9ee;
+  --color-text-muted: #8b909d;
+  --color-border: #333742;
+  --shadow-card: 0 8px 24px rgba(0, 0, 0, 0.4);
+}
+
+/* 使用者尚未手動切換時,跟隨作業系統的深淺色設定 */
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]):not([data-theme="dark"]) {
+    --color-bg: #14161c;
+    --color-card-bg: #1e2129;
+    --color-primary: #7c93ff;
+    --color-primary-hover: #93a5ff;
+    --color-danger: #f0736c;
+    --color-danger-hover: #ff8a83;
+    --color-text: #e7e9ee;
+    --color-text-muted: #8b909d;
+    --color-border: #333742;
+    --shadow-card: 0 8px 24px rgba(0, 0, 0, 0.4);
+  }
+}
+
 * {
   box-sizing: border-box;
 }
@@ -28,6 +58,7 @@ body {
   background-color: var(--color-bg);
   font-family: "Segoe UI", "Microsoft JhengHei", -apple-system, sans-serif;
   color: var(--color-text);
+  transition: background-color 0.2s ease, color 0.2s ease;
 }
 
 /* 卡片式容器,版面置中並限制最大寬度 */
@@ -40,16 +71,70 @@ body {
   padding: 24px;
 }
 
+.header-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  margin-bottom: 20px;
+}
+
 h1 {
-  margin: 0 0 20px;
+  margin: 0;
   font-size: 22px;
-  text-align: center;
+}
+
+/* 深色模式切換按鈕 */
+.theme-toggle-btn {
+  flex-shrink: 0;
+  padding: 6px 12px;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  background-color: var(--color-card-bg);
+  color: var(--color-text);
+  font-size: 13px;
+  cursor: pointer;
+  white-space: nowrap;
+}
+
+.theme-toggle-btn:hover {
+  border-color: var(--color-primary);
 }
 
 .input-row {
   display: flex;
   gap: 8px;
   margin-bottom: 16px;
+}
+
+/* 篩選按鈕列 */
+.filter-row {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 16px;
+}
+
+.filter-btn {
+  flex: 1;
+  padding: 8px 10px;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  background-color: var(--color-card-bg);
+  color: var(--color-text-muted);
+  font-size: 14px;
+  cursor: pointer;
+  transition: background-color 0.15s ease, color 0.15s ease;
+}
+
+.filter-btn:hover {
+  color: var(--color-text);
+}
+
+/* 目前選中的篩選按鈕要有明顯樣式 */
+.filter-btn.active {
+  background-color: var(--color-primary);
+  border-color: var(--color-primary);
+  color: #fff;
 }
 
 #todo-input {

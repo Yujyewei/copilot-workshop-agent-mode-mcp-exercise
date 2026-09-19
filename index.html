@@ -8,7 +8,11 @@
 </head>
 <body>
   <div class="card">
-    <h1>待辦清單</h1>
+    <!-- 標題列,右側放深色模式切換按鈕 -->
+    <div class="header-row">
+      <h1>待辦清單</h1>
+      <button type="button" id="theme-toggle-btn" class="theme-toggle-btn"></button>
+    </div>
 
     <!-- 新增待辦事項的輸入區 -->
     <form id="todo-form" class="input-row">
@@ -20,6 +24,13 @@
       >
       <button type="submit" id="add-btn">新增</button>
     </form>
+
+    <!-- 篩選按鈕:全部 / 未完成 / 已完成 -->
+    <div class="filter-row" id="filter-row">
+      <button type="button" class="filter-btn active" data-filter="all">全部</button>
+      <button type="button" class="filter-btn" data-filter="active">未完成</button>
+      <button type="button" class="filter-btn" data-filter="completed">已完成</button>
+    </div>
 
     <!-- 待辦清單顯示區 -->
     <ul id="todo-list" class="todo-list"></ul>
